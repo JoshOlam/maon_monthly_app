@@ -25,7 +25,7 @@ import streamlit as st
 # Data dependencies
 import pandas as pd
 import numpy as np
-import psycopg
+import psycopg2
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.ensemble._forest import RandomForestRegressor
@@ -42,7 +42,7 @@ def connect():
                   +" password="+ config.PGPASSWORD
     #print(conn_string)
     print("\t...completed\nConnecting to the server...")
-    conn = psycopg.connect(conn_string)
+    conn = psycopg2.connect(conn_string)
     print("\t...Server Connected!")
     print("Importing data...")
     cursor = conn.cursor()
@@ -169,12 +169,11 @@ def monthly_training(location: str, sku: str, month: int):
     df_pred.fillna(0, inplace=True)
 
     prediction = rdf_.predict(df_pred)
-    
+
     return prediction
 
 #For data preprocessing
 def preprocess_df(df):
-    #df = df[df['region']=="SW"]
     print("Done")
     df.drop(['region', 'tms', 'year'], axis = 1, inplace=True)
     df['ams'] = abs(df['ams'])
@@ -182,6 +181,37 @@ def preprocess_df(df):
 #raw = preprocess_df(raw)
 
 
+
+
+
+def _model(df):
+    X, y = _data_preprocessing(df)
+    print("Done processing data...")
+    # Train-test split
+    X_train, X_test, y_train, y_test = train_test_split(X,
+                                                        y,
+                                                        test_size=0.20,
+                                                        random_state=42,
+                                                        shuffle=False
+                                                        )
+    rfr = RandomForestRegressor(random_state=42)
+    print("Fitting model...")
+    rfr.fit(X_train, y_train)
+    
+    print("Running prediction")
+    result = []
+    y_pred = rfr.predict(X_test) #.score(X_train, y_train)
+    MSE = mean_squared_error(y_test, y_pred)
+    rmse = round(np.sqrt(MSE), 2)
+    result.append('RandomForestRegression RMSE: SW')
+    result.append(rmse)
+    accuracy_ = round(r2_score(y_test, y_pred) , 2)
+    #print(f"Accuracy: {accuracy_}%")
+    result.append(f"Accuracy: {accuracy_}")
+    
+    return result
+
+predictions = _model(df)
 
 # The main function where for the actual app
 def main():
@@ -211,6 +241,15 @@ def main():
 
 	# Building out the predication page
 	if selection == "Prediction":
+        #options = ["Retrain model", "Monthly Prediction"]
+        #selection = st.sidebar.selectbox("Choose the training type", options)
+
+        pred_option = ["Select here", "Full Model Training", "Monthly Prediction"]
+        selection = st.sidebar.selectbox("Select Training Type", pred_option)
+        if selection == "Full Model Training":
+            st.write(predictions)
+
+
 		st.info("""AMS Prediction with ML Models \n
 		Params: Location - The depot
 		sku - The Item Number
