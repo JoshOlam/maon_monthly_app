@@ -246,64 +246,60 @@ def main():
 		if selections == "Full Model Training":
 			if st.button("Retrain the model"):
 				st.balloons()
-				st.success(predictions)
-		
-        #options = ["Retrain model", "Monthly Prediction"]
-        #selection = st.sidebar.selectbox("Choose the training type", options)
+				st.write(predictions)
+				
+		if selections == "Monthly Prediction":
+			st.info("""AMS Prediction with ML Models \n
+				Params: Location - The depot
+				sku - The Item Number
+				Month - The Month""")
+			# Preprocess data
+			df_cleaned = df.copy()
+			cols = [col for col in df_cleaned.columns if col != 'ams'] + ["ams"]
+			df_cleaned = df_cleaned.reindex(columns = cols)
+			df_cleaned = df_cleaned[df_cleaned['region'] == "SW"]
+			df_cleaned.drop(['region', 'tms', 'year', 'ams'], axis=1, inplace=True)
+			#df_cleaned['ams'] = abs(df_cleaned['ams'])
+			
+			#For depot (also known as location)
+			select_location = df_cleaned['depot'].unique()
+			#st.write(type(locations))
+			location = st.selectbox("Location", options=select_location)
+			st.write('`You selected`', location, " `depot`")
+			
+			#For product number (also known as sku)
+			#sku = [i for i in df_cleaned['item_no'].unique() if i != "FUNT"]
+			sku = df_cleaned['item_no'].unique()
+			Product_Number = st.selectbox("SKU", options=sku)
+			st.write('`You selected`', Product_Number, " `item_no`")
+			
+			#For Month
+			months = df['month'].unique()
+				month = st.selectbox("Month", options=months)
+				if st.checkbox("Show hint"):
+					st.markdown("""
+					⚡ Description of the Encoded Month ⚡ 
+					|Month | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec |
+					|------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+					|Code  | `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` |`10` |`11` | `12`| 
+					""")
+					st.write("\n")
+				st.write('`You selected`', month, " `month`")
 
-		st.info("""AMS Prediction with ML Models \n
-		Params: Location - The depot
-		sku - The Item Number
-		Month - The Month""")
+				train_df = df_cleaned[(df_cleaned['depot'] == location) & (df_cleaned['item_no']==Product_Number) & (df_cleaned['month']==month)]
+				train_df = train_df.set_index("depot")
 
-		# Preprocess data
-		df_cleaned = df.copy()
-		cols = [col for col in df_cleaned.columns if col != 'ams'] + ["ams"]
-		df_cleaned = df_cleaned.reindex(columns = cols)
-		df_cleaned = df_cleaned[df_cleaned['region'] == "SW"]
-		df_cleaned.drop(['region', 'tms', 'year', 'ams'], axis=1, inplace=True)
-		#df_cleaned['ams'] = abs(df_cleaned['ams'])
+				st.write(train_df)
 
+				#pred_df = monthly_training(location = location, sku = Product_Number, month = month)
 
-		#For depot (also known as location)
-		select_location = df_cleaned['depot'].unique()
-		#st.write(type(locations))
-		location = st.selectbox("Location", options=select_location)
-		st.write('`You selected`', location, " `depot`")
-
-		#For product number (also known as sku)
-		#sku = [i for i in df_cleaned['item_no'].unique() if i != "FUNT"]
-		sku = df_cleaned['item_no'].unique()
-		Product_Number = st.selectbox("SKU", options=sku)
-		st.write('`You selected`', Product_Number, " `item_no`")
-
-		#For Month
-		months = df['month'].unique()
-		month = st.selectbox("Month", options=months)
-		if st.checkbox("Show hint"):
-			st.markdown("""
-			⚡ Description of the Encoded Month ⚡ 
-			|Month | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec |
-			|------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-			|Code  | `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` |`10` |`11` | `12`| 
-			""")
-			st.write("\n")
-		st.write('`You selected`', month, " `month`")
-
-		train_df = df_cleaned[(df_cleaned['depot'] == location) & (df_cleaned['item_no']==Product_Number) & (df_cleaned['month']==month)]
-		train_df = train_df.set_index("depot")
-
-		st.write(train_df)
-
-		#pred_df = monthly_training(location = location, sku = Product_Number, month = month)
-
-		if st.button("Get Predicted Value"):
-			if train_df.shape[0] == 0:
-				st.write("The provided parameters do not exist in the training")
-			else:
-				pred_df = monthly_training(location = location, sku = Product_Number, month = month)
-				st.balloons()
-				st.success("Predicted as: {}".format(pred_df))
+				if st.button("Get Predicted Value"):
+					if train_df.shape[0] == 0:
+						st.write("The provided parameters do not exist in the training")
+					else:
+						pred_df = monthly_training(location = location, sku = Product_Number, month = month)
+						st.balloons()
+						st.success("Predicted as: {}".format(pred_df))
 
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':
