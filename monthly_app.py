@@ -296,7 +296,7 @@ def main():
 				else:
 					pred_df = monthly_training(location = location, sku = Product_Number, month = month)
 					st.balloons()
-					st.success("Predicted as: {}".format(pred_df))
+					st.success("Predicted as: {}".format(round(pred_df,2)))
 
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':
