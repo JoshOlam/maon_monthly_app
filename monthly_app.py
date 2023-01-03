@@ -244,7 +244,10 @@ def main():
 		pred_option = ["Select here", "Full Model Training", "Monthly Prediction"]
 		selections = st.sidebar.selectbox("Select Training Type", pred_option)
 		if selections == "Full Model Training":
-			st.write(predictions)
+			if st.button("Retrain the model"):
+				st.balloons()
+				st.success(predictions)
+		
         #options = ["Retrain model", "Monthly Prediction"]
         #selection = st.sidebar.selectbox("Choose the training type", options)
 
