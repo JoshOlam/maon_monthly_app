@@ -245,8 +245,8 @@ def main():
         #selection = st.sidebar.selectbox("Choose the training type", options)
 
         	pred_option = ["Select here", "Full Model Training", "Monthly Prediction"]
-		selection = st.sidebar.selectbox("Select Training Type", pred_option)
-		if selection == "Full Model Training":
+		selections = st.sidebar.selectbox("Select Training Type", pred_option)
+		if selections == "Full Model Training":
 		    st.write(predictions)
 
 
