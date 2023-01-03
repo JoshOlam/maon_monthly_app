@@ -244,10 +244,10 @@ def main():
         #options = ["Retrain model", "Monthly Prediction"]
         #selection = st.sidebar.selectbox("Choose the training type", options)
 
-        pred_option = ["Select here", "Full Model Training", "Monthly Prediction"]
-        selection = st.sidebar.selectbox("Select Training Type", pred_option)
-        if selection == "Full Model Training":
-            st.write(predictions)
+        	pred_option = ["Select here", "Full Model Training", "Monthly Prediction"]
+		selection = st.sidebar.selectbox("Select Training Type", pred_option)
+		if selection == "Full Model Training":
+		    st.write(predictions)
 
 
 		st.info("""AMS Prediction with ML Models \n
