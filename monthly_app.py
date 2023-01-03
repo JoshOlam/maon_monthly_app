@@ -241,14 +241,12 @@ def main():
 
 	# Building out the predication page
 	if selection == "Prediction":
-        #options = ["Retrain model", "Monthly Prediction"]
-        #selection = st.sidebar.selectbox("Choose the training type", options)
-
-        	pred_option = ["Select here", "Full Model Training", "Monthly Prediction"]
+		pred_option = ["Select here", "Full Model Training", "Monthly Prediction"]
 		selections = st.sidebar.selectbox("Select Training Type", pred_option)
 		if selections == "Full Model Training":
-		    st.write(predictions)
-
+			st.write(predictions)
+        #options = ["Retrain model", "Monthly Prediction"]
+        #selection = st.sidebar.selectbox("Choose the training type", options)
 
 		st.info("""AMS Prediction with ML Models \n
 		Params: Location - The depot
