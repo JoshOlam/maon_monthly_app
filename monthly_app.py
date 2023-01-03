@@ -275,31 +275,28 @@ def main():
 			
 			#For Month
 			months = df['month'].unique()
-				month = st.selectbox("Month", options=months)
-				if st.checkbox("Show hint"):
-					st.markdown("""
-					⚡ Description of the Encoded Month ⚡ 
-					|Month | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec |
-					|------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-					|Code  | `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` |`10` |`11` | `12`| 
-					""")
-					st.write("\n")
-				st.write('`You selected`', month, " `month`")
-
-				train_df = df_cleaned[(df_cleaned['depot'] == location) & (df_cleaned['item_no']==Product_Number) & (df_cleaned['month']==month)]
-				train_df = train_df.set_index("depot")
-
-				st.write(train_df)
-
-				#pred_df = monthly_training(location = location, sku = Product_Number, month = month)
-
-				if st.button("Get Predicted Value"):
-					if train_df.shape[0] == 0:
-						st.write("The provided parameters do not exist in the training")
-					else:
-						pred_df = monthly_training(location = location, sku = Product_Number, month = month)
-						st.balloons()
-						st.success("Predicted as: {}".format(pred_df))
+			month = st.selectbox("Month", options=months)
+			st.write('`You selected`', month, " `month`")
+			if st.checkbox("Show hint"):
+				st.markdown("""
+				⚡ Description of the Encoded Month ⚡ 
+				|Month | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec |
+				|------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+				|Code  | `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` |`10` |`11` | `12`| 
+				""")
+				st.write("\n")
+			train_df = df_cleaned[(df_cleaned['depot'] == location) & (df_cleaned['item_no']==Product_Number) & (df_cleaned['month']==month)]
+			train_df = train_df.set_index("depot")
+			st.write(train_df)
+			
+			#pred_df = monthly_training(location = location, sku = Product_Number, month = month)
+			if st.button("Get Predicted Value"):
+				if train_df.shape[0] == 0:
+					st.write("The provided parameters do not exist in the training")
+				else:
+					pred_df = monthly_training(location = location, sku = Product_Number, month = month)
+					st.balloons()
+					st.success("Predicted as: {}".format(pred_df))
 
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':
