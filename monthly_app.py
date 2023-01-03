@@ -25,7 +25,7 @@ import streamlit as st
 # Data dependencies
 import pandas as pd
 import numpy as np
-import psycopg2
+import psycopg
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.ensemble._forest import RandomForestRegressor
@@ -42,7 +42,7 @@ def connect():
                   +" password="+ config.PGPASSWORD
     #print(conn_string)
     print("\t...completed\nConnecting to the server...")
-    conn = psycopg2.connect(conn_string)
+    conn = psycopg.connect(conn_string)
     print("\t...Server Connected!")
     print("Importing data...")
     cursor = conn.cursor()
