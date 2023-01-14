@@ -258,7 +258,7 @@ def main():
 			cols = [col for col in df_cleaned.columns if col != 'ams'] + ["ams"]
 			df_cleaned = df_cleaned.reindex(columns = cols)
 			df_cleaned = df_cleaned[df_cleaned['region'] == "SW"]
-			df_cleaned.drop(['region', 'tms', 'year', 'ams'], axis=1, inplace=True)
+			df_cleaned.drop(['region', 'tms', 'year'], axis=1, inplace=True)
 			#df_cleaned['ams'] = abs(df_cleaned['ams'])
 			
 			#For depot (also known as location)
@@ -287,6 +287,7 @@ def main():
 				st.write("\n")
 			train_df = df_cleaned[(df_cleaned['depot'] == location) & (df_cleaned['item_no']==Product_Number) & (df_cleaned['month']==month)]
 			train_df = train_df.set_index("depot")
+			train_df.rename(columns = {'ams': 'actual_ams'}, inplace = True)
 			st.write(train_df)
 			
 			#pred_df = monthly_training(location = location, sku = Product_Number, month = month)
@@ -297,6 +298,10 @@ def main():
 					pred_df = monthly_training(location = location, sku = Product_Number, month = month)
 					st.balloons()
 					st.success("Predicted as: {}".format(pred_df))
+					train_df['predicted_ams'] = pred_df
+					st.write(train_df)
+					st.download_button("Download Result as CSV", train_df.to_csv(), str(location)+"-"+str(Product_Number)+"-"+str(month)+".csv", "text/csv")
+
 
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':
