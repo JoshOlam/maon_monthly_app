@@ -300,7 +300,7 @@ def main():
 					st.success("Predicted as: {}".format(pred_df))
 					train_df['predicted_ams'] = pred_df
 					st.write(train_df)
-					st.download_button("Download Result as CSV", train_df.to_csv(), str(location)+"-"+str(Product_Number)+"-"+str(month)+".csv", "text/csv")
+					st.download_button("Download Result as CSV", train_df.to_csv(), "Prediction-Result" + str(location)+"-"+str(Product_Number)+"-"+str(month)+".csv", "text/csv")
 
 
 # Required to let Streamlit instantiate our web app.  
