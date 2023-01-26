@@ -33,7 +33,7 @@ from sklearn.ensemble._forest import RandomForestRegressor
 import sys
 sys.path.append("../") #to add the directory containing the config script
 import maon_config as config
-
+@st.cache
 def connect():
     
     # Set up a connection to the postgres server.
